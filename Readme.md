@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Vladimir Rurik](https://up.htmlacademy.ru/javascript/14/user/664207).
-* Наставник: `Неизвестно`.
+* Наставник: [Антон Попов](https://up.htmlacademy.ru/javascript/14/user/78239).
 
 ---
 
