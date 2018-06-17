@@ -383,15 +383,16 @@ var closeActiveCard = function () {
  * @param {boolean} isActive - активный/неактивный режим
  */
 var setPage = function (isActive) {
-  mapElement.classList.remove('map--faded');
   if (isActive) {
+    mapElement.classList.remove('map--faded');
     adFormElement.classList.remove('ad-form--disabled');
   } else {
+    mapElement.classList.add('map--faded');
     adFormElement.classList.add('ad-form--disabled');
   }
 
   adFormFieldsets.forEach(function (adFormFieldset) {
-    adFormFieldset.disabled = true;
+    adFormFieldset.disabled = !isActive;
   });
 };
 
