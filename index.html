@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="preload" href="fonts/roboto.woff2" as="font">
+  <link rel="preload" href="fonts/robotobold.woff2" as="font">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <title>Кексобукинг</title>
 </head>
@@ -37,10 +39,9 @@
         <form action="#" class="map__filters" autocomplete="off">
           <select name="housing-type" id="housing-type" class="map__filter">
             <option value="any" selected>Любой тип жилья</option>
-            <option value="palace">Дворец</option>
             <option value="flat">Квартира</option>
             <option value="house">Дом</option>
-            <option value="bungalo">Бунгало</option>
+            <option value="bungalo">Сарай</option>
           </select>
 
           <select name="housing-price" id="housing-price" class="map__filter">
@@ -59,9 +60,8 @@
 
           <select name="housing-guests" id="housing-guests" class="map__filter">
             <option value="any" selected>Любое число гостей</option>
-            <option value="2">Два гостя</option>
             <option value="1">Один гость</option>
-            <option value="0">Не для гостей</option>
+            <option value="2">Два гостя</option>
           </select>
 
           <fieldset id="housing-features" class="map__features">
@@ -90,7 +90,7 @@
     <section class="notice">
       <h2 class="notice__title">Ваше объявление</h2>
 
-      <form class="ad-form ad-form--disabled" method="post" enctype="multipart/form-data" autocomplete="off">
+      <form class="ad-form ad-form--disabled" action="https://js.dump.academy/keksobooking" method="post" enctype="multipart/form-data" autocomplete="off">
         <fieldset class="ad-form-header">
           <legend class="ad-form-header__title">Ваша фотография (для карты)</legend>
           <div class="ad-form-header__upload">
@@ -107,19 +107,19 @@
 
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="title">Заголовок объявления</label>
-          <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио">
+          <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио" required minlength="30" maxlength="100">
         </fieldset>
 
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="address">Адрес</label>
-          <input id="address" name="address" type="text">
+          <input id="address" name="address" type="text" readonly>
         </fieldset>
 
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="type">Тип жилья</label>
           <select id="type" name="type">
-            <option value="bungalo">Бунгало</option>
             <option value="flat" selected>Квартира</option>
+            <option value="bungalo">Лачуга</option>
             <option value="house">Дом</option>
             <option value="palace">Дворец</option>
           </select>
@@ -127,7 +127,7 @@
 
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
-          <input id="price" name="price" type="number" placeholder="5000">
+          <input id="price" name="price" type="number" placeholder="5000" required max="1000000">
         </fieldset>
 
         <fieldset class="ad-form__element ad-form__element--time">
