@@ -1,16 +1,7 @@
 @font-face {
   font-family: "Roboto";
-  src: url("../fonts/Roboto-Bold.woff2") format("woff2"),
-      url("../fonts/Roboto-Bold.woff") format("woff");
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Roboto";
-  src: url("../fonts/Roboto-Regular.woff2") format("woff2"),
-      url("../fonts/Roboto-Regular.woff") format("woff");
+  src: url("../fonts/roboto.woff") format("woff"),
+    url("../fonts/roboto.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -18,9 +9,18 @@
 
 @font-face {
   font-family: "Roboto";
-  src: url("../fonts/Roboto-Medium.woff2") format("woff2"),
-      url("../fonts/Roboto-Medium.woff") format("woff");
+  src: url("../fonts/robotomedium.woff") format("woff"),
+    url("../fonts/robotomedium.woff2") format("woff2");
   font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("../fonts/robotobold.woff") format("woff"),
+    url("../fonts/robotobold.woff2") format("woff2");
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -116,7 +116,7 @@ fieldset {
   height: 750px;
 
   background-color: #82bcc0;
-  background-image: url("../img/map.jpg");
+  background-image: url('../img/map.jpg');
   background-repeat: no-repeat;
   background-position: center bottom;
 
@@ -377,12 +377,10 @@ fieldset {
   font-size: 14px;
   vertical-align: middle;
   cursor: pointer;
-
-  border: 1px solid transparent;
 }
 
 .map__filter:hover {
-  border: 1px solid #ffaa99;
+  border-color: #ffaa99;
 }
 
 .map__filter:focus {
@@ -634,6 +632,12 @@ fieldset {
   outline: none;
   -webkit-box-shadow: 0 0 2px 2px #ff6547;
           box-shadow: 0 0 2px 2px #ff6547;
+}
+
+.ad-form__element .invalid {
+  outline: none;
+  -webkit-box-shadow: 0 0 2px 2px #cc0000;
+          box-shadow: 0 0 2px 2px #cc0000;
 }
 
 .ad-form__element--time {
@@ -1160,7 +1164,6 @@ fieldset {
 
 .popup__photo {
   margin-right: 5px;
-  margin-bottom: 5px;
 }
 
 .popup__photo:hover {
