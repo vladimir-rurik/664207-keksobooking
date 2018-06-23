@@ -440,7 +440,7 @@ var renderCard = function (notice, parentElement, nextElement, cardTemplate) {
 /**
  * Функция, ставящая/снимающая подсветку поля красной рамкой.
  * @param {Object} target - поле формы
- * @param {boolean} isLightOn - подсветить или нет
+ * @param {boolean} isLightningOn - подсветить или нет
  */
 var markLightning = function (target, isLightningOn) {
   if (isLightningOn) {
@@ -457,7 +457,7 @@ var markLightning = function (target, isLightningOn) {
  */
 var changeValidityIndicator = function (target) {
   // Сброс рамки
-  markLightning(target,false);
+  markLightning(target, false);
 
   // Если поле не валидно, оно подсвечивается
   target.checkValidity();
@@ -700,7 +700,7 @@ userPinElement.addEventListener('mousedown', function (evt) {
 adFormFields.forEach(function (formField) {
 
   formField.addEventListener('invalid', function (evt) {
-    markLightning(evt.target,true);
+    markLightning(evt.target, true);
   });
   formField.addEventListener('blur', function (evt) {
     changeValidityIndicator(evt.target);
