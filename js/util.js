@@ -2,6 +2,7 @@
 
 (function () {
   var ENTER_KEYCODE = 13;
+  var ERROR_TIMEOUT = 2000;
 
   window.util = {
     /**
@@ -11,44 +12,6 @@
      */
     isEnterEvent: function (evt) {
       return evt.keyCode === ENTER_KEYCODE;
-    },
-
-    /**
-     * Метод, выполняющий перестановку элементов массива случайным образом.
-     * @param {Array.<*>} items - массив элементов
-     * @return {Array.<*>} - новый массив с переставленными элементами
-     */
-    shuffle: function (items) {
-      var shuffledItems = items.slice();
-
-      for (var i = shuffledItems.length; i > 1; i--) {
-        var randomIndex = Math.floor(Math.random() * i);
-        var itemCopy = shuffledItems[i - 1];
-        shuffledItems[i - 1] = shuffledItems[randomIndex];
-        shuffledItems[randomIndex] = itemCopy;
-      }
-
-      return shuffledItems;
-    },
-
-    /**
-     * Метод, выбирающий случайное число из заданного промежутка.
-     * @param {number} startNumber - начальное число промежутка
-     * @param {number} endNumber - конечное число промежутка
-     * @return {number} - случайное число из заданного промежутка,
-     * включая startNumber и endNumber
-     */
-    getRandomNumber: function (startNumber, endNumber) {
-      return Math.floor(Math.random() * (endNumber - startNumber + 1)) + startNumber;
-    },
-
-    /**
-     * Метод, выбирающий случайный элемент в массиве.
-     * @param {Array.<*>} items - массив элементов
-     * @return {*} - случайный элемент массива
-     */
-    getRandomItem: function (items) {
-      return items[Math.floor(Math.random() * items.length)];
     },
 
     /**
@@ -71,6 +34,21 @@
       parentElement.appendChild(fragment);
 
       return items;
+    },
+
+    /**
+     * Метод, отрисовывающий сообщение об ошибке.
+     * @callback onErrorCallback
+     * @param {string} errorMessage - сообщение об ошибке
+     */
+    showError: function (errorMessage) {
+      var node = document.createElement('div');
+      node.classList.add('error');
+      node.textContent = errorMessage;
+      document.body.insertAdjacentElement('afterbegin', node);
+      setTimeout(function () {
+        node.remove();
+      }, ERROR_TIMEOUT);
     }
   };
 })();

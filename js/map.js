@@ -20,7 +20,7 @@
    * @const
    * @type {number}
    */
-  var SIMILAR_ADS_COUNT = 8;
+  var SIMILAR_ADS_COUNT = 5;
 
   var mapElement = document.querySelector('.map');
   var mapPinsElement = mapElement.querySelector('.map__pins');
@@ -38,7 +38,7 @@
    */
   var openCard = function (ad) {
     closeActiveCard();
-    activeCard = window.renderCard(ad, mapElement, mapFiltersElement, mapCardTemplate);
+    activeCard = window.card.render(ad, mapElement, mapFiltersElement, mapCardTemplate);
 
     var closeButton = activeCard.querySelector('.popup__close');
 
@@ -63,10 +63,12 @@
 
   /**
    * Функция, отрисовывающая на карте метки похожих объявлений.
+   * @callback onLoadCallback
+   * @param {Array.<Object>} ads - массив объявлений
    */
-  var renderPins = function () {
-    adsData = window.data.getAds(SIMILAR_ADS_COUNT);
-    pins = window.util.renderElements(adsData, mapPinsElement, mapPinTemplate, window.renderPin);
+  var renderPins = function (ads) {
+    adsData = ads.slice(0, SIMILAR_ADS_COUNT);
+    pins = window.util.renderElements(adsData, mapPinsElement, mapPinTemplate, window.pin.render);
     var i = 0;
     pins.forEach(function (pin) {
       addPinEventListeners(pin, i++);
@@ -143,8 +145,9 @@
      */
     enable: function () {
       mapElement.classList.remove('map--faded');
-      renderPins();
+      window.backend.getData(renderPins, window.util.showError);
       this.isActive = true;
     }
   };
+
 })();

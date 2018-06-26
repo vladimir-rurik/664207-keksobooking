@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var RESET_TIMEOUT = 1;
+
+  var formElement = window.form.getElement();
 
   /**
    * Функция, возвращающая страницу в исходное состояние.
@@ -11,8 +14,8 @@
     window.form.reset();
   };
 
-  window.form.getElement().addEventListener('reset', function () {
-    resetPage();
+  formElement.addEventListener('reset', function () {
+    setTimeout(resetPage, RESET_TIMEOUT);
   });
 
   resetPage();
