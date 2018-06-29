@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var HIDE_MESSAGE_TIMEOUT = 2000;
   var adFormElement = document.querySelector('.ad-form');
   var adFormFieldsets = adFormElement.querySelectorAll('fieldset');
   var adFormFields = adFormElement.querySelectorAll('input, select, textarea');
@@ -10,6 +11,7 @@
   var timeOutSelect = adFormElement.querySelector('[name=timeout]');
   var roomsCountSelect = adFormElement.querySelector('[name=rooms]');
   var capacitySelect = adFormElement.querySelector('[name=capacity]');
+  var successMessage = document.querySelector('.success');
 
   /**
    * Функция, ставящая/снимающая подсветку поля красной рамкой.
@@ -93,6 +95,19 @@
     });
   };
 
+  /**
+   * Обработчик успешной отправки данных формы на сервер
+   * @callback onLoadCallback
+   */
+  var loadHandler = function () {
+    successMessage.classList.remove('hidden');
+    setTimeout(function () {
+      successMessage.classList.add('hidden');
+    }, HIDE_MESSAGE_TIMEOUT);
+
+    adFormElement.reset();
+  };
+
   typeSelect.addEventListener('change', function (evt) {
     setMinPrice(evt.target.value);
   });
@@ -120,6 +135,15 @@
     formField.addEventListener('blur', function (evt) {
       changeValidityIndicator(evt.target);
     });
+  });
+
+  adFormElement.addEventListener('submit', function (evt) {
+    var errorElement = document.querySelector('.error');
+    if (errorElement) {
+      errorElement.remove();
+    }
+    window.backend.sendData(new FormData(adFormElement), loadHandler, window.util.showError);
+    evt.preventDefault();
   });
 
   window.form = {

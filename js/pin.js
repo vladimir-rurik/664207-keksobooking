@@ -22,16 +22,18 @@
    * @param {Object} pinTemplate - шаблон метки
    * @return {Object} - DOM-элемент
    */
-  window.renderPin = function (ad, pinTemplate) {
-    var pinElement = pinTemplate.cloneNode(true);
-    var pinAvatar = pinElement.querySelector('img');
+  window.pin = {
+    render: function (ad, pinTemplate) {
+      var pinElement = pinTemplate.cloneNode(true);
+      var pinAvatar = pinElement.querySelector('img');
 
-    pinElement.style.left = ad.location.x - PIN_WIDTH / 2 + 'px';
-    pinElement.style.top = ad.location.y - PIN_HEIGHT + 'px';
+      pinElement.style.left = ad.location.x - PIN_WIDTH / 2 + 'px';
+      pinElement.style.top = ad.location.y - PIN_HEIGHT + 'px';
 
-    pinAvatar.src = ad.author.avatar;
-    pinAvatar.alt = ad.offer.title;
+      pinAvatar.src = ad.author.avatar;
+      pinAvatar.alt = ad.offer.title;
 
-    return pinElement;
+      return pinElement;
+    }
   };
 })();
