@@ -83,10 +83,10 @@
 
 
   /** Обработчик загрузки данных с сервера.
-   * @callback onLoadCallback
+   * @callback cbShowAds
    * @param {Array.<Object>} ads - массив объявлений
    */
-  var onLoadHandler = function (ads) {
+  var cbShowAds = function (ads) {
     window.data.setAds(ads);
     renderPins(ads);
     mapElement.classList.remove('map--faded');
@@ -151,7 +151,7 @@
      * Метод, переводящий карту в активный режим.
      */
     enable: function () {
-      window.backend.getData(onLoadHandler, window.util.showError);
+      window.backend.getData(cbShowAds, window.util.showError);
       this.isActive = true;
     }
   };
