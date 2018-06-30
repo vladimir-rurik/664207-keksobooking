@@ -1,19 +1,10 @@
 'use strict';
 
 (function () {
-  /**
-   * Наименьшая y-координата метки
-   * @const
-   * @type {number}
-   */
-  var MIN_Y_LOCATION = 150;
-
-  /**
-   * Наибольшая y-координата метки
-   * @const
-   * @type {number}
-   */
-  var MAX_Y_LOCATION = 500;
+  var YCoordinate = {
+    MIN: 150,
+    MAX: 500
+  };
 
   /**
    * Количество похожих объявлений
@@ -29,7 +20,6 @@
   var mapFiltersElement = mapElement.querySelector('.map__filters-container');
 
   var activeCard = null;
-  var adsData = [];
   var pins = [];
 
   /**
@@ -63,32 +53,22 @@
 
   /**
    * Функция, отрисовывающая на карте метки похожих объявлений.
-   * @callback onLoadCallback
    * @param {Array.<Object>} ads - массив объявлений
    */
   var renderPins = function (ads) {
-    adsData = ads.slice(0, SIMILAR_ADS_COUNT);
-    pins = window.util.renderElements(adsData, mapPinsElement, mapPinTemplate, window.pin.render);
-    var i = 0;
-    pins.forEach(function (pin) {
-      addPinEventListeners(pin, i++);
-    });
-  };
+    var adsSelection = ads.slice(0, SIMILAR_ADS_COUNT);
+    pins = window.util.renderElements(adsSelection, mapPinsElement, mapPinTemplate, window.pin.render);
 
-  /**
-   * Функция, добавляющая обработчики событий для метки.
-   * @param {Object} pin - метка похожего объявления
-   * @param {number} i - позиция объявления в массиве adsData
-   */
-  var addPinEventListeners = function (pin, i) {
-    pin.addEventListener('click', function () {
-      openCard(adsData[i]);
-    });
+    adsSelection.forEach(function (ad, index) {
+      pins[index].addEventListener('click', function () {
+        openCard(ad);
+      });
 
-    pin.addEventListener('keydown', function (evt) {
-      if (window.util.isEnterEvent(evt)) {
-        openCard(adsData[i]);
-      }
+      pins[index].addEventListener('keydown', function (evt) {
+        if (window.util.isEnterEvent(evt)) {
+          openCard(ad);
+        }
+      });
     });
   };
 
@@ -100,6 +80,23 @@
       pin.remove();
     });
   };
+
+
+  /** Обработчик загрузки данных с сервера.
+   * @callback onLoadCallback
+   * @param {Array.<Object>} ads - массив объявлений
+   */
+  var onLoadHandler = function (ads) {
+    window.data.setAds(ads);
+    renderPins(ads);
+    mapElement.classList.remove('map--faded');
+  };
+
+  document.addEventListener('keydown', function (evt) {
+    if (window.util.isEscEvent(evt) && evt.target.tagName.toLowerCase() !== 'select') {
+      closeActiveCard();
+    }
+  });
 
   window.map = {
     isActive: false,
@@ -117,7 +114,7 @@
      * @return {number}
      */
     getMinY: function () {
-      return MIN_Y_LOCATION;
+      return YCoordinate.MIN;
     },
 
     /**
@@ -125,10 +122,20 @@
      * @return {number}
      */
     getMaxY: function () {
-      return MAX_Y_LOCATION;
+      return YCoordinate.MAX;
     },
 
     closeCard: closeActiveCard,
+
+    /**
+     * Метод, обновляющий метки на карте.
+     * @param {Array.<Object>} ads - массив объявлений
+     */
+    refreshPins: function (ads) {
+      closeActiveCard();
+      deletePins();
+      renderPins(ads);
+    },
 
     /**
      * Метод, возвращающий карту в исходное состояние.
@@ -144,8 +151,7 @@
      * Метод, переводящий карту в активный режим.
      */
     enable: function () {
-      mapElement.classList.remove('map--faded');
-      window.backend.getData(renderPins, window.util.showError);
+      window.backend.getData(onLoadHandler, window.util.showError);
       this.isActive = true;
     }
   };

@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var RESET_TIMEOUT = 1;
+  var RESET_TIMEOUT = 2;
 
   var formElement = window.form.getElement();
 

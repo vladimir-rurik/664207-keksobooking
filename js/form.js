@@ -78,7 +78,7 @@
    * @param {(string|number)} roomsCount - количество комнат
    */
   var validateCapacity = function (roomsCount) {
-    if (roomsCount < window.data.getNoGuestsRoomsCount) {
+    if (roomsCount < window.data.getNonGuestRoomCount()) {
       setCapacityValidity(1, roomsCount, 'Количество гостей не должно превышать число комнат и должно быть больше 0.');
     } else {
       setCapacityValidity(0, 0, '100 комнат - не для гостей.');
