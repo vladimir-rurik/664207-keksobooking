@@ -51,8 +51,8 @@
   /** Обработчик события изменения фильтра
    */
   var filterChangeHandler = function () {
-    var filteredData = window.data.getNotices().filter(function (notice) {
-      return passesFilters(notice.offer);
+    var filteredData = window.data.getAds().filter(function (ad) {
+      return passesFilters(ad.offer);
     });
     window.util.debounce(function () {
       window.map.refreshPins(filteredData);
