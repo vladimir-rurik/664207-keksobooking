@@ -2,7 +2,10 @@
 
 (function () {
   var ENTER_KEYCODE = 13;
+  var ESC_KEYCODE = 27;
   var ERROR_TIMEOUT = 2000;
+  var DEBOUNCE_INTERVAL = 500;
+  var lastTimeout = null;
 
   window.util = {
     /**
@@ -12,6 +15,15 @@
      */
     isEnterEvent: function (evt) {
       return evt.keyCode === ENTER_KEYCODE;
+    },
+
+    /**
+     * Метод, проверяющий нажатие клавиши Escape
+     * @param {Object} evt - объект события
+     * @return {boolean}
+     */
+    isEscEvent: function (evt) {
+      return evt.keyCode === ESC_KEYCODE;
     },
 
     /**
@@ -49,6 +61,17 @@
       setTimeout(function () {
         node.remove();
       }, ERROR_TIMEOUT);
+    },
+
+    /**
+     * Метод, устраняющий дребезг.
+     * @param {debounceCallback} callback - функция обратного вызова
+     */
+    debounce: function (callback) {
+      if (lastTimeout) {
+        clearTimeout(lastTimeout);
+      }
+      lastTimeout = setTimeout(callback, DEBOUNCE_INTERVAL);
     }
   };
 })();

@@ -33,12 +33,23 @@
 
   /**
    * Функция, запоняющая DOM-элемент текстом.
-   * @param {Object} element - родительский DOM-элемент
-   * @param {string} selector - CSS-селектор элемента
+   * @param {Object} element - DOM-элемент
    * @param {string} text - новый текст элемента
    */
-  var fillTemplateWithText = function (element, selector, text) {
-    element.querySelector(selector).textContent = text;
+  var fillTemplateWithText = function (element, text) {
+    if (text) {
+      element.textContent = text;
+    } else {
+      hideElement(element);
+    }
+  };
+
+  /**
+   * Функция, скрывающая DOM-элемент.
+   * @param {Object} element - DOM-элемент
+   */
+  var hideElement = function (element) {
+    element.classList.add('hidden');
   };
 
   window.card = {
@@ -58,17 +69,25 @@
       var photoTemplate = photosElement.querySelector('.popup__photo');
       var offer = ad.offer;
 
-      fillTemplateWithText(cardElement, '.popup__title', offer.title);
-      fillTemplateWithText(cardElement, '.popup__text--address', offer.address);
-      fillTemplateWithText(cardElement, '.popup__text--price', offer.price + '₽/ночь');
-      fillTemplateWithText(cardElement, '.popup__type', window.data.getPropertyType(offer.type));
-      fillTemplateWithText(cardElement, '.popup__text--capacity', offer.rooms + ' комнаты для ' + offer.guests + ' гостей');
-      fillTemplateWithText(cardElement, '.popup__text--time', 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout);
-      fillTemplateWithText(cardElement, '.popup__description', offer.description);
+      fillTemplateWithText(cardElement.querySelector('.popup__title'), offer.title);
+      fillTemplateWithText(cardElement.querySelector('.popup__text--address'), offer.address);
+      fillTemplateWithText(cardElement.querySelector('.popup__text--price'), offer.price + '₽/ночь');
+      fillTemplateWithText(cardElement.querySelector('.popup__type'), window.data.getPropertyType(offer.type));
+      fillTemplateWithText(cardElement.querySelector('.popup__text--capacity'), offer.rooms + ' комнаты для ' + offer.guests + ' гостей');
+      fillTemplateWithText(cardElement.querySelector('.popup__text--time'), 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout);
+      fillTemplateWithText(cardElement.querySelector('.popup__description'), offer.description);
       featuresElement.textContent = '';
-      window.util.renderElements(offer.features, featuresElement, featureTemplate, renderFeature);
+      if (offer.features.length > 0) {
+        window.util.renderElements(offer.features, featuresElement, featureTemplate, renderFeature);
+      } else {
+        hideElement(featuresElement);
+      }
       photosElement.textContent = '';
-      window.util.renderElements(offer.photos, photosElement, photoTemplate, renderPhoto);
+      if (offer.photos.length > 0) {
+        window.util.renderElements(offer.photos, photosElement, photoTemplate, renderPhoto);
+      } else {
+        hideElement(photosElement);
+      }
       cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
       parentElement.insertBefore(cardElement, nextElement);
 
