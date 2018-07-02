@@ -2,9 +2,23 @@
 
 (function () {
   var HIDE_MESSAGE_TIMEOUT = 2000;
+  var DEFAULT_AVATAR_FILE = 'img/muffin-grey.svg';
+  var IMAGE_FILE_TYPES = [
+    'gif',
+    'jpg',
+    'jpeg',
+    'png',
+    'svg'
+  ];
+
   var adFormElement = document.querySelector('.ad-form');
   var adFormFieldsets = adFormElement.querySelectorAll('fieldset');
   var adFormFields = adFormElement.querySelectorAll('input, select, textarea');
+  var avatarPreview = adFormElement.querySelector('.ad-form-header__preview img');
+  var avatarChooser = adFormElement.querySelector('.ad-form__field input[type=file]');
+  var photoContainer = adFormElement.querySelector('.ad-form__photo-container');
+  var photoPreview = adFormElement.querySelector('.ad-form__photo');
+  var photoChooser = adFormElement.querySelector('.ad-form__upload input[type=file]');
   var typeSelect = adFormElement.querySelector('[name=type]');
   var priceInput = adFormElement.querySelector('[name=price]');
   var timeInSelect = adFormElement.querySelector('[name=timein]');
@@ -12,6 +26,134 @@
   var roomsCountSelect = adFormElement.querySelector('[name=rooms]');
   var capacitySelect = adFormElement.querySelector('[name=capacity]');
   var successMessage = document.querySelector('.success');
+
+  var photos = [];
+  var draggedPhoto = null;
+
+  /**
+   * Функция, определяющая, является ли файл изображением
+   * @param {string} fileName - имя файла
+   * @return {boolean}
+   */
+  var isValidImageFile = function (fileName) {
+    return IMAGE_FILE_TYPES.some(function (fileType) {
+      return fileName.endsWith(fileType);
+    });
+  };
+
+  /**
+   * Функция, отрисовывающая превью аватарки
+   */
+  var previewAvatar = function () {
+    var avatarFile = avatarChooser.files[0];
+
+    if (avatarFile && isValidImageFile(avatarFile.name.toLowerCase())) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        avatarPreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(avatarFile);
+    }
+  };
+
+  /**
+   * Функция, отрисовывающая превью фотографий помещения
+   */
+  var previewPhotos = function () {
+    deletePhotos();
+
+    [].forEach.call(photoChooser.files, function (photoFile) {
+      if (photoFile && isValidImageFile(photoFile.name.toLowerCase())) {
+        var preview = document.createElement('div');
+        preview.classList.add('ad-form__photo');
+        var photo = document.createElement('img');
+        preview.appendChild(photo);
+        var reader = new FileReader();
+
+        reader.addEventListener('load', function () {
+          photo.src = reader.result;
+          photoContainer.appendChild(preview);
+          photos.push(preview);
+        });
+
+        reader.readAsDataURL(photoFile);
+      }
+    });
+
+    photoPreview.style = photos ? 'display: none;' : '';
+  };
+
+  /**
+   * Функция, удаляющая превью фотографий помещения
+   */
+  var deletePhotos = function () {
+    [].forEach.call(photos, function (photo) {
+      photo.remove();
+    });
+  };
+
+  /**
+   * Функция, определяющая, является ли элемент изображением.
+   * @param {Object} target - DOM-элемент
+   * @return {boolean}
+   */
+  var isImageElement = function (target) {
+    return target.tagName.toLowerCase() === 'img';
+  };
+
+  /**
+   * Функция, подготавливающая перемещение фото.
+   * @param {Object} target - DOM-элемент - перетаскиваемый элемент
+   * @param {Object} dataTransfer - объект передачи данных
+   */
+  var startDraggingPhoto = function (target, dataTransfer) {
+    if (isImageElement(target)) {
+      draggedPhoto = target.parentElement;
+      dataTransfer.setData('text/plain', target.src);
+    }
+  };
+
+  /**
+   * Функция, завершающая перемещение фото.
+   */
+  var finishDraggingPhoto = function () {
+    draggedPhoto = null;
+  };
+
+  /**
+   * Функция, возвращающая индекс дочернего DOM-элемента.
+   * @param {Object} parent - родительский DOM-элемент
+   * @param {Object} child - дочерний DOM-элемент
+   * @return {number}
+   */
+  var getIndex = function (parent, child) {
+    return [].indexOf.call(parent.children, child);
+  };
+
+  /**
+   * Функция, определяющая порядок дочерних элементов
+   * @param {Object} parent - родительский DOM-элемент
+   * @param {Object} child1 - первый дочерний DOM-элемент
+   * @param {Object} child2 - второй дочерний DOM-элемент
+   * @return {boolean} - стоит ли первый элемент раньше второго
+   */
+  var isBefore = function (parent, child1, child2) {
+    return getIndex(parent, child1) < getIndex(parent, child2);
+  };
+
+  /**
+   * Функция, перемещающая фото в указанное место.
+   * @param {Object} target - DOM-элемент, в который перетаскивается фото
+   */
+  var dropPhoto = function (target) {
+    if (target.classList.contains('ad-form__photo')) {
+      target.style.boxShadow = '';
+      var placement = isBefore(photoContainer, draggedPhoto, target) ? 'afterend' : 'beforebegin';
+      target.insertAdjacentElement(placement, draggedPhoto);
+    }
+  };
 
   /**
    * Функция, ставящая/снимающая подсветку поля красной рамкой.
@@ -108,6 +250,47 @@
     adFormElement.reset();
   };
 
+  avatarChooser.addEventListener('change', function () {
+    previewAvatar();
+  });
+
+  photoChooser.addEventListener('change', function () {
+    previewPhotos();
+  });
+
+  photoContainer.addEventListener('dragstart', function (evt) {
+    startDraggingPhoto(evt.target, evt.dataTransfer);
+  });
+
+  photoContainer.addEventListener('dragend', function (evt) {
+    finishDraggingPhoto();
+    evt.preventDefault();
+  });
+
+  photoContainer.addEventListener('dragenter', function (evt) {
+    if (draggedPhoto && isImageElement(evt.target)) {
+      evt.target.parentElement.style.boxShadow = '0 0 2px 2px #ff5635';
+    }
+  });
+
+  photoContainer.addEventListener('dragleave', function (evt) {
+    if (draggedPhoto && isImageElement(evt.target)) {
+      evt.target.parentElement.style.boxShadow = '';
+    }
+  });
+
+  photoContainer.addEventListener('dragover', function (evt) {
+    if (draggedPhoto) {
+      evt.preventDefault();
+    }
+    return false;
+  });
+
+  photoContainer.addEventListener('drop', function (evt) {
+    dropPhoto(evt.target.parentElement);
+    evt.preventDefault();
+  });
+
   typeSelect.addEventListener('change', function (evt) {
     setMinPrice(evt.target.value);
   });
@@ -162,6 +345,9 @@
       setMinPrice(typeSelect.value);
       validateCapacity(roomsCountSelect.value);
       disableInputs(true);
+      avatarPreview.src = DEFAULT_AVATAR_FILE;
+      deletePhotos();
+      photoPreview.style = '';
       adFormElement.classList.add('ad-form--disabled');
     },
 

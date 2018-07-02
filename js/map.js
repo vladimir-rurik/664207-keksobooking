@@ -11,7 +11,7 @@
    * @const
    * @type {number}
    */
-  var SIMILAR_ADS_COUNT = 5;
+  var MAX_ADS_ON_PAGE_COUNT = 5;
 
   var mapElement = document.querySelector('.map');
   var mapPinsElement = mapElement.querySelector('.map__pins');
@@ -56,10 +56,9 @@
    * @param {Array.<Object>} ads - массив объявлений
    */
   var renderPins = function (ads) {
-    var adsSelection = ads.slice(0, SIMILAR_ADS_COUNT);
-    pins = window.util.renderElements(adsSelection, mapPinsElement, mapPinTemplate, window.pin.render);
+    pins = window.util.renderElements(ads, mapPinsElement, mapPinTemplate, window.pin.render);
 
-    adsSelection.forEach(function (ad, index) {
+    ads.forEach(function (ad, index) {
       pins[index].addEventListener('click', function () {
         openCard(ad);
       });
@@ -88,7 +87,8 @@
    */
   var cbShowAds = function (ads) {
     window.data.setAds(ads);
-    renderPins(ads);
+    var adsSelection = ads.slice(0, MAX_ADS_ON_PAGE_COUNT);
+    renderPins(adsSelection);
     mapElement.classList.remove('map--faded');
   };
 
@@ -134,7 +134,8 @@
     refreshPins: function (ads) {
       closeActiveCard();
       deletePins();
-      renderPins(ads);
+      var adsSelection = ads.slice(0, MAX_ADS_ON_PAGE_COUNT);
+      renderPins(adsSelection);
     },
 
     /**
