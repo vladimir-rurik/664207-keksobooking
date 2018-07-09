@@ -11,6 +11,11 @@
     'svg'
   ];
 
+  var MinGuestCountMessages = Object.freeze({
+    ZERO: {guestCount: 0, message: '100 комнат - не для гостей.'},
+    ONE: {guestCount: 0, message: 'Количество гостей не должно превышать число комнат и должно быть больше 0.'}
+  });
+
   var adFormElement = document.querySelector('.ad-form');
   var adFormFieldsets = adFormElement.querySelectorAll('fieldset');
   var adFormFields = adFormElement.querySelectorAll('input, select, textarea');
@@ -27,8 +32,8 @@
   var capacitySelect = adFormElement.querySelector('[name=capacity]');
   var successMessage = document.querySelector('.success');
 
-  var photos = [];
-  var draggedPhoto = null;
+  var _photos = [];
+  var _draggedPhoto = null;
 
   /**
    * Функция, определяющая, является ли файл изображением
@@ -43,9 +48,9 @@
 
   /**
    * Функция, отрисовывающая превью аватарки
+   * @param {File} avatarFile - объект файл для аватарки
    */
-  var previewAvatar = function () {
-    var avatarFile = avatarChooser.files[0];
+  var previewAvatar = function (avatarFile) {
 
     if (avatarFile && isValidImageFile(avatarFile.name.toLowerCase())) {
       var reader = new FileReader();
@@ -63,8 +68,8 @@
    */
   var previewPhotos = function () {
     deletePhotos();
-
-    [].forEach.call(photoChooser.files, function (photoFile) {
+    // TODO: ask mentor of adding up the document fragment
+    Array.from(photoChooser.files, function (photoFile) {
       if (photoFile && isValidImageFile(photoFile.name.toLowerCase())) {
         var preview = document.createElement('div');
         preview.classList.add('ad-form__photo');
@@ -75,23 +80,21 @@
         reader.addEventListener('load', function () {
           photo.src = reader.result;
           photoContainer.appendChild(preview);
-          photos.push(preview);
+          _photos.push(preview);
         });
 
         reader.readAsDataURL(photoFile);
       }
     });
 
-    photoPreview.style = photos ? 'display: none;' : '';
+    photoPreview.style = _photos ? 'display: none;' : '';
   };
 
   /**
    * Функция, удаляющая превью фотографий помещения
    */
   var deletePhotos = function () {
-    [].forEach.call(photos, function (photo) {
-      photo.remove();
-    });
+    _photos.innerHTML = '';
   };
 
   /**
@@ -110,7 +113,7 @@
    */
   var startDraggingPhoto = function (target, dataTransfer) {
     if (isImageElement(target)) {
-      draggedPhoto = target.parentElement;
+      _draggedPhoto = target.parentElement;
       dataTransfer.setData('text/plain', target.src);
     }
   };
@@ -119,7 +122,7 @@
    * Функция, завершающая перемещение фото.
    */
   var finishDraggingPhoto = function () {
-    draggedPhoto = null;
+    _draggedPhoto = null;
   };
 
   /**
@@ -129,7 +132,7 @@
    * @return {number}
    */
   var getIndex = function (parent, child) {
-    return [].indexOf.call(parent.children, child);
+    return Array.from(parent.children).indexOf(child);
   };
 
   /**
@@ -150,8 +153,8 @@
   var dropPhoto = function (target) {
     if (target.classList.contains('ad-form__photo')) {
       target.style.boxShadow = '';
-      var placement = isBefore(photoContainer, draggedPhoto, target) ? 'afterend' : 'beforebegin';
-      target.insertAdjacentElement(placement, draggedPhoto);
+      var placement = isBefore(photoContainer, _draggedPhoto, target) ? 'afterend' : 'beforebegin';
+      target.insertAdjacentElement(placement, _draggedPhoto);
     }
   };
 
@@ -187,8 +190,7 @@
    */
   var setMinPrice = function (propertyType) {
     var price = window.data.getPropertyMinPrice(propertyType);
-    priceInput.min = price;
-    priceInput.placeholder = price;
+    priceInput.min = priceInput.placeholder = price;
     if (priceInput.value) {
       changeValidityIndicator(priceInput);
     }
@@ -221,9 +223,9 @@
    */
   var validateCapacity = function (roomsCount) {
     if (roomsCount < window.data.getNonGuestRoomCount()) {
-      setCapacityValidity(1, roomsCount, 'Количество гостей не должно превышать число комнат и должно быть больше 0.');
+      setCapacityValidity(MinGuestCountMessages.ONE.guestCount, roomsCount, MinGuestCountMessages.ONE.message);
     } else {
-      setCapacityValidity(0, 0, '100 комнат - не для гостей.');
+      setCapacityValidity(MinGuestCountMessages.ZERO.guestCount, 0, MinGuestCountMessages.ZERO.message);
     }
   };
 
@@ -238,10 +240,9 @@
   };
 
   /**
-   * Обработчик успешной отправки данных формы на сервер
-   * @callback onLoadCallback
+   * функция вызывающаяся после успешной отправки данных формы на сервер
    */
-  var loadHandler = function () {
+  var showSuccessMessageAndResetForm = function () {
     successMessage.classList.remove('hidden');
     setTimeout(function () {
       successMessage.classList.add('hidden');
@@ -250,84 +251,127 @@
     adFormElement.reset();
   };
 
-  avatarChooser.addEventListener('change', function () {
-    previewAvatar();
-  });
+  var avatarChooserChangeHandler = function () {
+    previewAvatar(avatarChooser.files[0]);
+  };
 
-  photoChooser.addEventListener('change', function () {
+  var photoChooserChangeHandler = function () {
     previewPhotos();
-  });
+  };
 
-  photoContainer.addEventListener('dragstart', function (evt) {
+  var photoContainerDragStartHandler = function (evt) {
     startDraggingPhoto(evt.target, evt.dataTransfer);
-  });
+  };
 
-  photoContainer.addEventListener('dragend', function (evt) {
+  var photoContainerDragEndHandler = function (evt) {
     finishDraggingPhoto();
     evt.preventDefault();
-  });
+  };
 
-  photoContainer.addEventListener('dragenter', function (evt) {
-    if (draggedPhoto && isImageElement(evt.target)) {
+  var photoContainerDragEnterHandler = function (evt) {
+    if (_draggedPhoto && isImageElement(evt.target)) {
       evt.target.parentElement.style.boxShadow = '0 0 2px 2px #ff5635';
     }
-  });
+  };
 
-  photoContainer.addEventListener('dragleave', function (evt) {
-    if (draggedPhoto && isImageElement(evt.target)) {
+  var photoContainerDragLeaveHandler = function (evt) {
+    if (_draggedPhoto && isImageElement(evt.target)) {
       evt.target.parentElement.style.boxShadow = '';
     }
-  });
+  };
 
-  photoContainer.addEventListener('dragover', function (evt) {
-    if (draggedPhoto) {
+  var photoContainerDragOverHandler = function (evt) {
+    if (_draggedPhoto) {
       evt.preventDefault();
     }
     return false;
-  });
+  };
 
-  photoContainer.addEventListener('drop', function (evt) {
+  var photoContainerDropHandler = function (evt) {
     dropPhoto(evt.target.parentElement);
     evt.preventDefault();
-  });
+  };
 
-  typeSelect.addEventListener('change', function (evt) {
+  var typeSelectChangeHanlder = function (evt) {
     setMinPrice(evt.target.value);
-  });
+  };
 
-  timeInSelect.addEventListener('change', function (evt) {
+  var timeInSelectChangeHandler = function (evt) {
     setTime(timeOutSelect, evt.target.value);
-  });
+  };
 
-  timeOutSelect.addEventListener('change', function (evt) {
+  var timeOutSelectChangeHandler = function (evt) {
     setTime(timeInSelect, evt.target.value);
-  });
+  };
 
-  roomsCountSelect.addEventListener('change', function (evt) {
+  var roomsCountSelectChangeHandler = function (evt) {
     validateCapacity(evt.target.value);
-  });
+  };
 
-  capacitySelect.addEventListener('change', function () {
+  var capacitySelectChangeHandler = function () {
     validateCapacity(roomsCountSelect.value);
-  });
+  };
 
-  adFormFields.forEach(function (formField) {
-    formField.addEventListener('invalid', function (evt) {
-      markLightning(evt.target, true);
-    });
-    formField.addEventListener('blur', function (evt) {
-      changeValidityIndicator(evt.target);
-    });
-  });
+  var adFormFieldInvalidHandler = function (evt) {
+    markLightning(evt.target, true);
+  };
 
-  adFormElement.addEventListener('submit', function (evt) {
+  var adFormFieldBlurHandler = function (evt) {
+    changeValidityIndicator(evt.target);
+  };
+
+  var adFormElementSubmitHandler = function (evt) {
     var errorElement = document.querySelector('.error');
     if (errorElement) {
       errorElement.remove();
     }
-    window.backend.sendData(new FormData(adFormElement), loadHandler, window.util.showError);
+    window.backend.sendData(new FormData(adFormElement), showSuccessMessageAndResetForm, window.util.showError);
     evt.preventDefault();
-  });
+  };
+
+  var addEventHandlers = function () {
+    avatarChooser.addEventListener('change', avatarChooserChangeHandler);
+    photoChooser.addEventListener('change', photoChooserChangeHandler);
+    photoContainer.addEventListener('dragstart', photoContainerDragStartHandler);
+    photoContainer.addEventListener('dragend', photoContainerDragEndHandler);
+    photoContainer.addEventListener('dragenter', photoContainerDragEnterHandler);
+    photoContainer.addEventListener('dragleave', photoContainerDragLeaveHandler);
+    photoContainer.addEventListener('dragover', photoContainerDragOverHandler);
+    photoContainer.addEventListener('drop', photoContainerDropHandler);
+    typeSelect.addEventListener('change', typeSelectChangeHanlder);
+    timeInSelect.addEventListener('change', timeInSelectChangeHandler);
+    timeOutSelect.addEventListener('change', timeOutSelectChangeHandler);
+    roomsCountSelect.addEventListener('change', roomsCountSelectChangeHandler);
+    capacitySelect.addEventListener('change', capacitySelectChangeHandler);
+    adFormElement.addEventListener('submit', adFormElementSubmitHandler);
+
+    adFormFields.forEach(function (formField) {
+      formField.addEventListener('invalid', adFormFieldInvalidHandler);
+      formField.addEventListener('blur', adFormFieldBlurHandler);
+    });
+  };
+
+  var removeEventHandlers = function () {
+    avatarChooser.removeEventListener('change', avatarChooserChangeHandler);
+    photoChooser.removeEventListener('change', photoChooserChangeHandler);
+    photoContainer.removeEventListener('dragstart', photoContainerDragStartHandler);
+    photoContainer.removeEventListener('dragend', photoContainerDragEndHandler);
+    photoContainer.removeEventListener('dragenter', photoContainerDragEnterHandler);
+    photoContainer.removeEventListener('dragleave', photoContainerDragLeaveHandler);
+    photoContainer.removeEventListener('dragover', photoContainerDragOverHandler);
+    photoContainer.removeEventListener('drop', photoContainerDropHandler);
+    typeSelect.removeEventListener('change', typeSelectChangeHanlder);
+    timeInSelect.removeEventListener('change', timeInSelectChangeHandler);
+    timeOutSelect.removeEventListener('change', timeOutSelectChangeHandler);
+    roomsCountSelect.removeEventListener('change', roomsCountSelectChangeHandler);
+    capacitySelect.removeEventListener('change', capacitySelectChangeHandler);
+    adFormElement.removeEventListener('submit', adFormElementSubmitHandler);
+
+    adFormFields.forEach(function (formField) {
+      formField.removeEventListener('invalid', adFormFieldInvalidHandler);
+      formField.removeEventListener('blur', adFormFieldBlurHandler);
+    });
+  };
 
   window.form = {
     /**
@@ -342,6 +386,8 @@
      * Метод, возвращающий форму в исходное состояние.
      */
     reset: function () {
+      removeEventHandlers();
+
       setMinPrice(typeSelect.value);
       validateCapacity(roomsCountSelect.value);
       disableInputs(true);
@@ -349,6 +395,8 @@
       deletePhotos();
       photoPreview.style = '';
       adFormElement.classList.add('ad-form--disabled');
+
+      addEventHandlers();
     },
 
     /**

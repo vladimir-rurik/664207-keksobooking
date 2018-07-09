@@ -48,7 +48,7 @@
     });
   };
 
-  /** Обработчик события изменения фильтра
+  /** функция обратного вызова события изменения фильтра
    */
   var filterChangeHandler = function () {
     var filteredData = window.data.getAds().filter(function (ad) {
@@ -59,7 +59,7 @@
     });
   };
 
-  [].forEach.call(filterElements, function (filterElement) {
+  Array.from(filterElements, function (filterElement) {
     filterElement.addEventListener('change', filterChangeHandler);
   });
 })();

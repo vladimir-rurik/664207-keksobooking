@@ -9,20 +9,20 @@
   var NON_GUEST_ROOM_COUNT = 100;
 
   var PropertyType = {
-    palace: 'Дворец',
-    flat: 'Квартира',
-    house: 'Дом',
-    bungalo: 'Бунгало'
+    PALACE: 'Дворец',
+    FLAT: 'Квартира',
+    HOUSE: 'Дом',
+    BUNGALO: 'Бунгало'
   };
 
   var PropertyMinPrice = {
-    palace: 10000,
-    flat: 1000,
-    house: 5000,
-    bungalo: 0
+    PALACE: 10000,
+    FLAT: 1000,
+    HOUSE: 5000,
+    BUNGALO: 0
   };
 
-  var adsData = [];
+  var _adsData = [];
 
   window.data = {
     /**
@@ -56,7 +56,7 @@
      * @return {Array.<Object>}
      */
     getAds: function () {
-      return adsData.slice();
+      return _adsData.slice();
     },
 
     /**
@@ -64,7 +64,7 @@
      * @param {Array.<Object>} ads - массив объявлений
      */
     setAds: function (ads) {
-      adsData = ads;
+      _adsData = ads;
     }
   };
 })();
