@@ -9,17 +9,21 @@
    * @type {Object}
    */
   var userPin = {
+
+    // константы этого объекта
     MIN_X: 0,
     MAX_X: window.map.getElement().offsetWidth,
     MIN_Y: window.map.getMinY(),
     MAX_Y: window.map.getMaxY(),
+    POINT_SHIFT: 16,
     INITIAL_LEFT: userPinElement.offsetLeft,
     INITIAL_TOP: userPinElement.offsetTop,
-    POINT_SHIFT: 16,
+    WIDTH: userPinElement.offsetWidth,
+    HEIGHT: userPinElement.offsetHeight,
+
+    // переменные этого объекта
     addressX: null,
     addressY: null,
-    width: userPinElement.offsetWidth,
-    height: userPinElement.offsetHeight,
 
     /**
      * Метод, возвращающий поправку при расчете x-координаты метки или ее адреса.
@@ -165,7 +169,7 @@
   /**
    * Функция, возвращающая метку пользователя в исходное положение
    */
-  window.resetUserPinPosition = function () {
+  window.user_pin.resetPosition = function () {
     userPin.resetAddress();
     setAddressField();
     setUserPinPosition();

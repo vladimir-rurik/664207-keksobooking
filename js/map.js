@@ -19,8 +19,8 @@
   var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
   var mapFiltersElement = mapElement.querySelector('.map__filters-container');
 
-  var activeCard = null;
-  var pins = [];
+  var _activeCard = null;
+  var _pins = [];
 
   /**
    * Функция, открывающая карточку объявления.
@@ -28,9 +28,9 @@
    */
   var openCard = function (ad) {
     closeActiveCard();
-    activeCard = window.card.render(ad, mapElement, mapFiltersElement, mapCardTemplate);
+    _activeCard = window.card.render(ad, mapElement, mapFiltersElement, mapCardTemplate);
 
-    var closeButton = activeCard.querySelector('.popup__close');
+    var closeButton = _activeCard.querySelector('.popup__close');
 
     closeButton.addEventListener('click', function () {
       closeActiveCard();
@@ -46,8 +46,8 @@
    * Функция, закрывающая текущую карточку объявления.
    */
   var closeActiveCard = function () {
-    if (activeCard) {
-      activeCard.remove();
+    if (_activeCard) {
+      _activeCard.remove();
     }
   };
 
@@ -56,14 +56,14 @@
    * @param {Array.<Object>} ads - массив объявлений
    */
   var renderPins = function (ads) {
-    pins = window.util.renderElements(ads, mapPinsElement, mapPinTemplate, window.pin.render);
+    _pins = window.util.renderElements(ads, mapPinsElement, mapPinTemplate, window.pin.render);
 
     ads.forEach(function (ad, index) {
-      pins[index].addEventListener('click', function () {
+      _pins[index].addEventListener('click', function () {
         openCard(ad);
       });
 
-      pins[index].addEventListener('keydown', function (evt) {
+      _pins[index].addEventListener('keydown', function (evt) {
         if (window.util.isEnterEvent(evt)) {
           openCard(ad);
         }
@@ -75,28 +75,21 @@
    * Функция, удаляющая с карты метки похожих объявлений.
    */
   var deletePins = function () {
-    pins.forEach(function (pin) {
+    _pins.forEach(function (pin) {
+      // TODO removeEventListeners on a click and keydown for the pin.
       pin.remove();
     });
   };
 
-
-  /** функция обратного вызова загрузки данных с сервера.
-   * @callback cbShowAds
+  /** функция показа объявлений
    * @param {Array.<Object>} ads - массив объявлений
    */
-  var cbShowAds = function (ads) {
+  var showAds = function (ads) {
     window.data.setAds(ads);
     var adsSelection = ads.slice(0, MAX_ADS_ON_PAGE_COUNT);
     renderPins(adsSelection);
     mapElement.classList.remove('map--faded');
   };
-
-  document.addEventListener('keydown', function (evt) {
-    if (window.util.isEscEvent(evt) && evt.target.tagName.toLowerCase() !== 'select') {
-      closeActiveCard();
-    }
-  });
 
   window.map = {
     isActive: false,
@@ -125,8 +118,6 @@
       return YCoordinate.MAX;
     },
 
-    closeCard: closeActiveCard,
-
     /**
      * Метод, обновляющий метки на карте.
      * @param {Array.<Object>} ads - массив объявлений
@@ -141,6 +132,9 @@
     /**
      * Метод, возвращающий карту в исходное состояние.
      */
+    // TODO
+    /* [ts] This constructor function may be converted to a class declaration.
+        (local function)(): void */
     reset: function () {
       closeActiveCard();
       deletePins();
@@ -151,8 +145,11 @@
     /**
      * Метод, переводящий карту в активный режим.
      */
+    // TODO
+    /* [ts] This constructor function may be converted to a class declaration.
+        (local function)(): void */
     enable: function () {
-      window.backend.getData(cbShowAds, window.util.showError);
+      window.backend.getData(showAds, window.util.showError);
       this.isActive = true;
     }
   };

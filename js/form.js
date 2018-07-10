@@ -13,7 +13,7 @@
 
   var MinGuestCountMessages = Object.freeze({
     ZERO: {guestCount: 0, message: '100 комнат - не для гостей.'},
-    ONE: {guestCount: 0, message: 'Количество гостей не должно превышать число комнат и должно быть больше 0.'}
+    ONE: {guestCount: 1, message: 'Количество гостей не должно превышать число комнат и должно быть больше 0.'}
   });
 
   var adFormElement = document.querySelector('.ad-form');
@@ -68,7 +68,7 @@
    */
   var previewPhotos = function () {
     deletePhotos();
-    // TODO: ask mentor of adding up the document fragment
+
     Array.from(photoChooser.files, function (photoFile) {
       if (photoFile && isValidImageFile(photoFile.name.toLowerCase())) {
         var preview = document.createElement('div');
@@ -351,27 +351,7 @@
     });
   };
 
-  var removeEventHandlers = function () {
-    avatarChooser.removeEventListener('change', avatarChooserChangeHandler);
-    photoChooser.removeEventListener('change', photoChooserChangeHandler);
-    photoContainer.removeEventListener('dragstart', photoContainerDragStartHandler);
-    photoContainer.removeEventListener('dragend', photoContainerDragEndHandler);
-    photoContainer.removeEventListener('dragenter', photoContainerDragEnterHandler);
-    photoContainer.removeEventListener('dragleave', photoContainerDragLeaveHandler);
-    photoContainer.removeEventListener('dragover', photoContainerDragOverHandler);
-    photoContainer.removeEventListener('drop', photoContainerDropHandler);
-    typeSelect.removeEventListener('change', typeSelectChangeHanlder);
-    timeInSelect.removeEventListener('change', timeInSelectChangeHandler);
-    timeOutSelect.removeEventListener('change', timeOutSelectChangeHandler);
-    roomsCountSelect.removeEventListener('change', roomsCountSelectChangeHandler);
-    capacitySelect.removeEventListener('change', capacitySelectChangeHandler);
-    adFormElement.removeEventListener('submit', adFormElementSubmitHandler);
-
-    adFormFields.forEach(function (formField) {
-      formField.removeEventListener('invalid', adFormFieldInvalidHandler);
-      formField.removeEventListener('blur', adFormFieldBlurHandler);
-    });
-  };
+  addEventHandlers();
 
   window.form = {
     /**
@@ -386,8 +366,6 @@
      * Метод, возвращающий форму в исходное состояние.
      */
     reset: function () {
-      removeEventHandlers();
-
       setMinPrice(typeSelect.value);
       validateCapacity(roomsCountSelect.value);
       disableInputs(true);
@@ -395,8 +373,6 @@
       deletePhotos();
       photoPreview.style = '';
       adFormElement.classList.add('ad-form--disabled');
-
-      addEventHandlers();
     },
 
     /**

@@ -7,7 +7,7 @@
    */
   var resetPage = function () {
     window.map.reset();
-    window.resetUserPinPosition();
+    window.user_pin.resetPosition();
     window.form.reset();
   };
 
