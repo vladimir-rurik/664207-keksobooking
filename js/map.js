@@ -91,6 +91,18 @@
     mapElement.classList.remove('map--faded');
   };
 
+  /**
+   * Обработчик ESC клавиши на странице
+   * @param {Object} evt - объект события
+   */
+  var documentKeyDownEscHandler = function (evt) {
+    if (window.util.isEscEvent(evt) && evt.target.tagName.toLowerCase() !== 'select') {
+      closeActiveCard();
+    }
+  };
+
+  document.addEventListener('keydown', documentKeyDownEscHandler);
+
   window.map = {
     isActive: false,
 
@@ -132,9 +144,6 @@
     /**
      * Метод, возвращающий карту в исходное состояние.
      */
-    // TODO
-    /* [ts] This constructor function may be converted to a class declaration.
-        (local function)(): void */
     reset: function () {
       closeActiveCard();
       deletePins();
@@ -146,8 +155,6 @@
      * Метод, переводящий карту в активный режим.
      */
     // TODO
-    /* [ts] This constructor function may be converted to a class declaration.
-        (local function)(): void */
     enable: function () {
       window.backend.getData(showAds, window.util.showError);
       this.isActive = true;

@@ -189,7 +189,7 @@
    * @param {string} propertyType - тип помещения
    */
   var setMinPrice = function (propertyType) {
-    var price = window.data.getPropertyMinPrice(propertyType);
+    var price = window.data.getPropertyMinPrice(propertyType.toUpperCase());
     priceInput.min = priceInput.placeholder = price;
     if (priceInput.value) {
       changeValidityIndicator(priceInput);

@@ -166,12 +166,14 @@
     startMovingUserPin(evt.clientX, evt.clientY);
   });
 
-  /**
-   * Функция, возвращающая метку пользователя в исходное положение
-   */
-  window.user_pin.resetPosition = function () {
-    userPin.resetAddress();
-    setAddressField();
-    setUserPinPosition();
+  window.userPin = {
+    /**
+     * Метод, возвращающий метку пользователя в исходное положение
+     */
+    resetPosition: function () {
+      userPin.resetAddress();
+      setAddressField();
+      setUserPinPosition();
+    }
   };
 })();
