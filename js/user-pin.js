@@ -18,12 +18,12 @@
     POINT_SHIFT: 16,
     INITIAL_LEFT: userPinElement.offsetLeft,
     INITIAL_TOP: userPinElement.offsetTop,
-    WIDTH: userPinElement.offsetWidth,
-    HEIGHT: userPinElement.offsetHeight,
 
     // переменные этого объекта
     addressX: null,
     addressY: null,
+    width: userPinElement.offsetWidth,
+    height: userPinElement.offsetHeight,
 
     /**
      * Метод, возвращающий поправку при расчете x-координаты метки или ее адреса.
