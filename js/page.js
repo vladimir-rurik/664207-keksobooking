@@ -10,6 +10,8 @@
    */
   var resetPage = function () {
     window.map.reset();
+    window.map.disableFilters(true);
+    window.map.disableFeatures(true);
     window.userPin.resetPosition();
     window.form.reset();
   };

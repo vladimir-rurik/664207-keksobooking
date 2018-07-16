@@ -381,6 +381,9 @@
     enable: function () {
       adFormElement.classList.remove('ad-form--disabled');
       disableInputs(false);
+      // включаем фильтры
+      window.map.disableFilters(false);
+      window.map.disableFeatures(false);
     }
   };
 })();

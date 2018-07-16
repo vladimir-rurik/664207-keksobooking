@@ -18,6 +18,8 @@
   var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
   var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
   var mapFiltersElement = mapElement.querySelector('.map__filters-container');
+  var mapFilters = document.querySelectorAll('.map__filter');
+  var mapFeatures = document.querySelectorAll('.map__checkbox');
 
   var _activeCard = null;
   var _pins = [];
@@ -76,8 +78,25 @@
    */
   var deletePins = function () {
     _pins.forEach(function (pin) {
-      // TODO removeEventListeners on a click and keydown for the pin.
       pin.remove();
+    });
+  };
+
+  /**
+   * Функция, сбрасывающая (очищающая) фильтры-селекторы
+   */
+  var clearFilters = function () {
+    mapFilters.forEach(function (mapFilter) {
+      mapFilter.selectedIndex = 0;
+    });
+  };
+
+  /**
+   * Функция, сбрасывающая (очищающая) фильтры-кнопки
+   */
+  var clearFeatures = function () {
+    mapFeatures.forEach(function (mapFeature) {
+      mapFeature.checked = false;
     });
   };
 
@@ -147,6 +166,8 @@
     reset: function () {
       closeActiveCard();
       deletePins();
+      clearFilters();
+      clearFeatures();
       mapElement.classList.add('map--faded');
       this.isActive = false;
     },
@@ -154,10 +175,29 @@
     /**
      * Метод, переводящий карту в активный режим.
      */
-    // TODO
     enable: function () {
       window.backend.getData(showAds, window.util.showError);
       this.isActive = true;
+    },
+
+    /**
+     * Функция, ставящая/снимающая блокировку с фильтра-селектора
+     * @param {boolean} isDisabled - блокировать или нет
+     */
+    disableFilters: function (isDisabled) {
+      mapFilters.forEach(function (mapFilter) {
+        mapFilter.disabled = isDisabled;
+      });
+    },
+
+    /**
+     * Функция, ставящая/снимающая блокировку с фильтра-кнопки
+     * @param {boolean} isDisabled - блокировать или нет
+     */
+    disableFeatures: function (isDisabled) {
+      mapFeatures.forEach(function (mapFeature) {
+        mapFeature.disabled = isDisabled;
+      });
     }
   };
 
