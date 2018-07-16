@@ -350,6 +350,8 @@ fieldset {
 }
 
 .map--faded .map__filters {
+  display: none;
+
   opacity: 0;
 }
 
