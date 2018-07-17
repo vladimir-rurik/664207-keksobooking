@@ -1,6 +1,12 @@
 'use strict';
 
 (function () {
+
+  var Price = {
+    LOW: 10000,
+    HIGH: 50000
+  };
+
   var filtersForm = window.map.getElement().querySelector('.map__filters');
   var filterElements = filtersForm.querySelectorAll('.map__filter, .map__checkbox');
 
@@ -9,11 +15,6 @@
   var roomsFilter = filtersForm.querySelector('#housing-rooms');
   var guestsFilter = filtersForm.querySelector('#housing-guests');
   var featuresFilters = filtersForm.querySelectorAll('.map__checkbox');
-
-  var Price = {
-    LOW: 10000,
-    HIGH: 50000
-  };
 
   /** Функция, определяющая диапазон, в который попадает цена.
    * @param {number} price - стоимость жилья
