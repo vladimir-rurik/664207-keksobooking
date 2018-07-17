@@ -3,8 +3,9 @@
 (function () {
   var ENTER_KEYCODE = 13;
   var ESC_KEYCODE = 27;
-  var ERROR_TIMEOUT = 2000;
+  var SHOW_ERROR_TIMEOUT = 2000;
   var DEBOUNCE_INTERVAL = 500;
+
   var lastTimeout = null;
 
   window.util = {
@@ -60,7 +61,7 @@
       document.body.insertAdjacentElement('afterbegin', node);
       setTimeout(function () {
         node.remove();
-      }, ERROR_TIMEOUT);
+      }, SHOW_ERROR_TIMEOUT);
     },
 
     /**

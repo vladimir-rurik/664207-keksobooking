@@ -9,8 +9,8 @@
    * Функция, выполняющая запрос к серверу.
    * @param {string} requestMethod - метод запроса
    * @param {string} requestURL - URL запроса
-   * @param {onLoadCallback} onLoad - обработчик успешной загрузки
-   * @param {onErrorCallback} onError - обработчик ошибок
+   * @param {onLoadCallback} onLoad - функция обратного вызова успешной загрузки
+   * @param {onErrorCallback} onError - функция обратного вызова ошибок
    * @param {Object} data - данные для отправки на сервер
    */
   var sendRequest = function (requestMethod, requestURL, onLoad, onError, data) {
@@ -40,8 +40,8 @@
   window.backend = {
     /**
      * Метод, выполняющий загрузку данных с сервера.
-     * @param {onLoadCallback} onLoad - обработчик успешной загрузки
-     * @param {onErrorCallback} onError - обработчик ошибок
+     * @param {onLoadCallback} onLoad - функция обратного вызова успешной загрузки
+     * @param {onErrorCallback} onError - функция обратного вызова ошибок
      */
     getData: function (onLoad, onError) {
       sendRequest('GET', DATA_URL, onLoad, onError);
@@ -50,8 +50,8 @@
     /**
      * Метод, выполняющий отправку данных на сервер.
      * @param {Object} data - данные для отправки
-     * @param {onLoadCallback} onLoad - обработчик успешной загрузки
-     * @param {onErrorCallback} onError - обработчик ошибок
+     * @param {onLoadCallback} onLoad - функция обратного вызова успешной загрузки
+     * @param {onErrorCallback} onError - функция обратного вызова ошибок
      */
     sendData: function (data, onLoad, onError) {
       sendRequest('POST', SUBMIT_URL, onLoad, onError, data);

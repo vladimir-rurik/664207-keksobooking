@@ -9,13 +9,17 @@
    * @type {Object}
    */
   var userPin = {
+
+    // константы этого объекта
     MIN_X: 0,
     MAX_X: window.map.getElement().offsetWidth,
     MIN_Y: window.map.getMinY(),
     MAX_Y: window.map.getMaxY(),
+    POINT_SHIFT: 16,
     INITIAL_LEFT: userPinElement.offsetLeft,
     INITIAL_TOP: userPinElement.offsetTop,
-    POINT_SHIFT: 16,
+
+    // переменные этого объекта
     addressX: null,
     addressY: null,
     width: userPinElement.offsetWidth,
@@ -162,12 +166,14 @@
     startMovingUserPin(evt.clientX, evt.clientY);
   });
 
-  /**
-   * Функция, возвращающая метку пользователя в исходное положение
-   */
-  window.resetUserPinPosition = function () {
-    userPin.resetAddress();
-    setAddressField();
-    setUserPinPosition();
+  window.userPin = {
+    /**
+     * Метод, возвращающий метку пользователя в исходное положение
+     */
+    resetPosition: function () {
+      userPin.resetAddress();
+      setAddressField();
+      setUserPinPosition();
+    }
   };
 })();

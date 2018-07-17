@@ -350,6 +350,8 @@ fieldset {
 }
 
 .map--faded .map__filters {
+  display: none;
+
   opacity: 0;
 }
 
@@ -798,13 +800,21 @@ fieldset {
 }
 
 .ad-form__photo {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  align-items: center;
   width: 70px;
   height: 70px;
   margin-right: 10px;
   margin-bottom: 10px;
+  overflow: hidden;
 
   background-color: #e4e4de;
   border-radius: 5px;
+
+  -webkit-box-align: center;
+  -ms-flex-align: center;
 }
 
 .ad-form__element--submit {
