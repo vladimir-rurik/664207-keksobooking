@@ -3,7 +3,8 @@
 (function () {
   var HIDE_MESSAGE_TIMEOUT = 2000;
   var DEFAULT_AVATAR_FILE = 'img/muffin-grey.svg';
-  var IMAGE_FILE_TYPES = [
+
+  var ImageFileTypes = [
     'gif',
     'jpg',
     'jpeg',
@@ -41,7 +42,7 @@
    * @return {boolean}
    */
   var isValidImageFile = function (fileName) {
-    return IMAGE_FILE_TYPES.some(function (fileType) {
+    return ImageFileTypes.some(function (fileType) {
       return fileName.endsWith(fileType);
     });
   };
