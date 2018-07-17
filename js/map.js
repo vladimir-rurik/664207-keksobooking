@@ -176,7 +176,13 @@
      * Метод, переводящий карту в активный режим.
      */
     enable: function () {
-      window.backend.getData(showAds, window.util.showError);
+      var ads = window.data.getAds();
+      // используем кэш, чтобы сократить затратные серверные запросы
+      if (ads.length > 0) {
+        showAds(ads);
+      } else {
+        window.backend.getData(showAds, window.util.showError);
+      }
       this.isActive = true;
     },
 
