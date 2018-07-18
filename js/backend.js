@@ -4,6 +4,7 @@
   var DATA_URL = 'https://js.dump.academy/keksobooking/data';
   var SUBMIT_URL = 'https://js.dump.academy/keksobooking';
   var TIMEOUT = 10000; // 10 секунд
+  var STATUS_OK = 200;
 
   /**
    * Функция, выполняющая запрос к серверу.
@@ -18,7 +19,7 @@
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === STATUS_OK) {
         onLoad(xhr.response);
       } else {
         onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);

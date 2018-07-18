@@ -2,8 +2,8 @@
 
 (function () {
   var YCoordinate = {
-    MIN: 150,
-    MAX: 500
+    MIN: 130,
+    MAX: 630
   };
 
   /**
